@@ -54,11 +54,17 @@ pipeline {
             }
         }
 
+        stage('Archive Report') {
+            steps {
+                // Archive entire report folder recursively
+                archiveArtifacts artifacts: 'results/report/**', allowEmptyArchive: false, fingerprint: true
+            }
+        }
+
         stage('Publish') {
             steps {
                 // Archive all results
-                archiveArtifacts artifacts: 'results/**', fingerprint: true
-                archiveArtifacts artifacts: 'results/report/**', fingerprint: true
+                // archiveArtifacts artifacts: 'results/**', fingerprint: true
 
                 // Publish HTML report (use forward slashes!)
                 publishHTML(target: [
@@ -72,7 +78,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             echo 'Pipeline finished.'
