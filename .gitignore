@@ -1,0 +1,5 @@
+# JMeter results and local machine files
+results/
+*.log
+*.jtl
+*.jmx.bak
