@@ -61,6 +61,14 @@ pipeline {
             }
         }
 
+        stage('Test HTML Access') {
+            steps {
+                bat '''
+                type %RESULTS_DIR%\\report\\index.html
+                '''
+            }
+        }
+
         stage('Publish') {
             steps {
                 // Archive all results
