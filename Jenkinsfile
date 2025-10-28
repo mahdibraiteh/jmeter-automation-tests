@@ -42,7 +42,7 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: "${RESULTS_DIR}\\report",
+                    reportDir: "${RESULTS_DIR}/report",
                     reportFiles: 'index.html',
                     reportName: 'JMeter HTML Report'
                 ])
