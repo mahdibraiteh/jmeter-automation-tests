@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        // ⚠️ Update this path to where JMeter is installed on your Windows system
         JMETER_HOME = 'C:\\Users\\mahdi\\OneDrive\\Desktop\\apache-jmeter-5.6.3'
         RESULTS_DIR = 'results'
+        REPORT_DIR = 'report_tmp' // temporary folder for Jenkins-safe HTML
     }
 
     stages {
@@ -16,9 +16,10 @@ pipeline {
 
         stage('Prepare') {
             steps {
-                // Delete old results and create results folder
+                // Clean old results
                 bat '''
                 if exist %RESULTS_DIR% rd /s /q %RESULTS_DIR%
+                if exist %REPORT_DIR% rd /s /q %REPORT_DIR%
                 mkdir %RESULTS_DIR%
                 '''
             }
@@ -26,7 +27,7 @@ pipeline {
 
         stage('Run JMeter') {
             steps {
-                // Run JMeter in non-GUI mode, generate HTML report
+                // Run JMeter and generate HTML dashboard
                 bat '''
                 "%JMETER_HOME%\\bin\\jmeter.bat" ^
                   -n -t Test-blazemeter.jmx ^
@@ -41,37 +42,33 @@ pipeline {
 
         stage('Debug Report') {
             steps {
-                //List report folder to verify all files are generated
+                // List all files to confirm HTML report generation
                 bat 'dir %RESULTS_DIR%\\report /s'
             }
         }
 
-        stage('Test HTML Access') {
+        stage('Prepare Jenkins HTML Report') {
             steps {
+                // Copy entire report folder to a Jenkins-friendly folder
+                // preserves all subfolders and assets
                 bat '''
-                type %RESULTS_DIR%\\report\\index.html
+                mkdir %REPORT_DIR%
+                xcopy %RESULTS_DIR%\\report\\* %REPORT_DIR% /E /I /Y
                 '''
             }
         }
 
-        stage('Archive Report') {
+        stage('Publish HTML Report') {
             steps {
-                // Archive entire report folder recursively
-                archiveArtifacts artifacts: 'results/report/**', allowEmptyArchive: false, fingerprint: true
-            }
-        }
+                // Archive all results as artifacts
+                archiveArtifacts artifacts: 'results/**', fingerprint: true
 
-        stage('Publish') {
-            steps {
-                // Archive all results
-                // archiveArtifacts artifacts: 'results/**', fingerprint: true
-
-                // Publish HTML report (use forward slashes!)
+                // Use publishHTML to display the report correctly in Jenkins
                 publishHTML(target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: "${RESULTS_DIR}/report",
+                    reportDir: "${REPORT_DIR}",
                     reportFiles: 'index.html',
                     reportName: 'JMeter HTML Report'
                 ])
