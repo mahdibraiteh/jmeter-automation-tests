@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // ⚠️ Update this path to where JMeter is installed on your Windows system
-        JMETER_HOME = 'C:\Users\mahdi\OneDrive\Desktop\apache-jmeter-5.6.3'
+        JMETER_HOME = 'C:\\Users\mahdi\OneDrive\Desktop\apache-jmeter-5.6.3'
         RESULTS_DIR = 'results'
     }
 
