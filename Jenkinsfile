@@ -42,7 +42,7 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: "C:\\Users\\mahdi\\.jenkins\\workspace\\Jmeter Test\\results\\report",
+                    reportDir: "${RESULTS_DIR}/report",
                     reportFiles: 'index.html',
                     reportName: 'JMeter HTML Report'
                 ])
