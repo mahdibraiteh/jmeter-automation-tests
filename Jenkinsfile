@@ -46,7 +46,7 @@ pipeline {
 
         stage('Debug Report') {
             steps {
-                // List report folder to verify all files are generated
+                //List report folder to verify all files are generated
                 bat 'dir %RESULTS_DIR%\\report /s'
             }
         }
